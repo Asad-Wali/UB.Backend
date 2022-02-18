@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
+import { RolesService } from 'src/roles/roles.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -7,18 +8,22 @@ import { User } from './user.entity';
 
 @Injectable()
 export class UsersService {
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    const currentEntity = Object.assign(new User(), createUserDto);
-    await User.save(currentEntity);
-    delete currentEntity.password;
-    return currentEntity;
+  constructor(private userRolesService: RolesService) {
+
   }
-  async findByEmail(email: string) {
+  async create(createUserDto: CreateUserDto): Promise<User> {
+    let user = new User();
+    user = Object.assign(user, createUserDto);
+    const Role = await this.userRolesService.findOne(createUserDto.role);
+    user.role = Role;
+    await User.save(user);
+    delete user.password;
+    return user;
+  }
+  async findByEmail(email: string): Promise<User> {
     return await User.findOne({
-      where: {
-        email: email,
-      },
-    });
+      email: email,
+    }, { relations: ["role"] });
   }
 
   async findById(id: number) {

@@ -5,14 +5,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { CreateRoleDto } from './dto/create-role.dto';
 import { UpdateRoleDto } from './dto/update-role.dto';
-import { Role, RoleStatus } from './roles.model';
+import { RoleStatus } from './roles.model';
+import { Role } from './entities/role.entity';
 
 @Injectable()
 export class RolesService {
   constructor(
     @InjectRepository(Role)
     private roleService: Repository<Role>,
-  ) {}
+  ) { }
   create(createRoleDto: CreateRoleDto) {
     const { Title, Description } = createRoleDto;
     const role = {

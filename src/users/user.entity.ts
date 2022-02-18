@@ -2,12 +2,12 @@
 import * as bcrypt from 'bcryptjs';
 import { Role } from 'src/roles/entities/role.entity';
 import {
-	BaseEntity,
-	BeforeInsert,
-	Column,
-	Entity,
-	ManyToOne,
-	PrimaryGeneratedColumn,
+  BaseEntity,
+  BeforeInsert,
+  Column,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 export enum UserStatus {
