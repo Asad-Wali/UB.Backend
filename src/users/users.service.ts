@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { RolesService } from 'src/roles/roles.service';
 
 import { CreateUserDto } from './dto/create-user.dto';
@@ -12,13 +12,20 @@ export class UsersService {
 
   }
   async create(createUserDto: CreateUserDto): Promise<User> {
-    let user = new User();
-    user = Object.assign(user, createUserDto);
-    const Role = await this.userRolesService.findOne(createUserDto.role);
-    user.role = Role;
-    await User.save(user);
-    delete user.password;
-    return user;
+    try {
+      let user = new User();
+      user = Object.assign(user, createUserDto);
+      const Role = await this.userRolesService.findOne(createUserDto.role);
+      console.log(Role)
+      user.role = Role;
+      await User.save(user);
+      delete user.password;
+      return user;
+    }
+    catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+
+    }
   }
   async findByEmail(email: string): Promise<User> {
     return await User.findOne({
